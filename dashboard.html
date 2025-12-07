@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stackly Automotive</title>
+
+<style>
+/* RESET */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Poppins",sans-serif;
+}
+
+body{
+  background:#f4f9ff;
+}
+
+/* ================= LOADER ================= */
+#loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #5d2bff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 9999;
+  animation: fadeOut 1.2s ease 1s forwards;
+}
+
+.loader-content {
+  text-align: center;
+  position: relative;
+}
+
+.pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120px;
+  height: 120px;
+  transform: translate(-50%, -50%);
+  border: 3px solid rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  animation: pulse 1.5s infinite ease-in-out;
+  z-index: 1;
+}
+
+#loader p {
+  color: white;
+  margin-top: 15px;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  animation: fadeText 3s infinite alternate;
+}
+
+/* ANIMATIONS */
+@keyframes pulse {
+  0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.7; }
+  70% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.2; }
+  100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.7; }
+}
+
+@keyframes fadeText {
+  from { opacity: 0.5; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; visibility: hidden; }
+}
+
+
+/* ================= NAVBAR ANIMATED ================= */
+.navbar{
+  width:100%;
+  background: linear-gradient(90deg, #4b2cff, #885cff, #c56ffd);
+  color:#fff;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 20px;
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:9999;
+  box-shadow:0 4px 25px rgba(0,0,0,0.25);
+
+  transform: translateY(-40px);
+  opacity:0;
+  animation: navbarDrop 0.8s ease forwards;
+}
+
+@keyframes navbarDrop {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* LOGO animation */
+.logo-area img{
+  height:50px;
+  width:auto;
+  opacity:0;
+  animation: logoFade 1s ease 0.4s forwards;
+}
+
+@keyframes logoFade {
+  from { transform: scale(0.6); opacity:0; }
+  to   { transform: scale(1); opacity:1; }
+}
+
+/* DESKTOP MENU */
+.nav-menu{
+  display:flex;
+  gap:25px;
+  list-style:none;
+}
+
+.nav-menu li a{
+  color:white;
+  text-decoration:none;
+  font-size:16px;
+  padding:8px 12px;
+  border-radius:8px;
+  transition:.3s;
+}
+
+/* GLOW HOVER */
+.nav-menu li a:hover{
+  background:#ffffff26;
+  box-shadow:0 0 10px #ffffff77;
+  transform: translateY(-3px);
+}
+
+/* DROPDOWN */
+.dropdown{
+  position:relative;
+}
+
+.dropdown-menu{
+  position:absolute;
+  top:42px;
+  left:0;
+  background:#0b2447;
+  width:160px;
+  border-radius:8px;
+  list-style:none;
+  padding:10px 0;
+  border:1px solid rgba(255,255,255,0.2);
+  display:none;
+  animation: dropFade .35s ease;
+}
+
+@keyframes dropFade {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.dropdown.open .dropdown-menu{
+  display:block;
+}
+
+/* HAMBURGER */
+.hamburger{
+  display:none;
+  flex-direction:column;
+  gap:5px;
+  cursor:pointer;
+  opacity:0;
+  animation: fadeIn 1s ease 0.5s forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity:1; }
+}
+
+.hamburger span{
+  width:28px;
+  height:3px;
+  background:white;
+  border-radius:4px;
+  transition:.3s;
+}
+
+/* MOBILE MENU */
+@media(max-width:768px){
+
+  .hamburger{
+    display:flex;
+  }
+
+  .nav-menu{
+    position:fixed;
+    top:70px;
+    right:-100%;
+    width:260px;
+    background:#0b2447;
+    height:calc(100vh - 70px);
+    flex-direction:column;
+    padding-top:15px;
+    padding-bottom:30px;
+    box-shadow:-4px 0 18px rgba(0,0,0,0.3);
+    transition:0.4s ease;
+  }
+
+  .nav-menu.active{
+    right:0;
+  }
+
+  .nav-menu li{
+    width:100%;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+
+    /* Animate each link (stagger effect) */
+    opacity:0;
+    animation: slideIn 0.6s ease forwards;
+  }
+
+  @keyframes slideIn {
+    0% { transform:translateX(50px); opacity:0; }
+    100% { transform:translateX(0); opacity:1; }
+  }
+
+  .nav-menu li a{
+    display:block;
+    width:100%;
+    padding:15px 8px;
+    font-size:18px;
+  }
+
+  .dropdown-menu{
+    position:relative;
+    width:100%;
+    border-radius:0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== LOADER ===== -->
+<div id="loader">
+  <div class="loader-content">
+    <div class="pulse-ring"></div>
+    <p>Loading Automotive...</p>
+  </div>
+</div>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar">
+
+  <div class="logo-area">
+    <img src="Screenshot (7) (1) (1).webp" alt="Logo">
+  </div>
+
+ <ul class="nav-menu" id="navMenu">
+
+  <li class="dropdown">
+    <a href="#" class="dropdown-btn">Home ▾</a>
+    <ul class="dropdown-menu">
+      <li><a href="index.html">Home 1</a></li>
+      <li><a href="Home2.html">Home 2</a></li>
+    </ul>
+  </li>
+
+  <li><a href="dashboard.html">Dashboard</a></li>
+  <li><a href="services.html">Services</a></li>
+   
+
+  <li><a href="about.html">About</a></li>
+  <li><a href="blog.html">Blog</a></li>
+<li><a href="signup.html">Signin</a></li>
+</ul>
+
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+
+</nav>
+
+<!-- ================= JS ================= -->
+<script>
+/* MOBILE MENU TOGGLE */
+const hamburger = document.getElementById("hamburger");
+const navMenu = document.getElementById("navMenu");
+
+hamburger.addEventListener("click", () => {
+  navMenu.classList.toggle("active");
+});
+
+/* DROPDOWNS OPEN */
+document.querySelectorAll(".dropdown-btn").forEach(btn => {
+  btn.addEventListener("click", function(e){
+    e.preventDefault();
+    this.parentElement.classList.toggle("open");
+  });
+});
+</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automotive Dashboard</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background: #f2f4f7;
+        color: #222;
+        margin-top: 100px;
+    }
+
+    .container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: auto;
+    }
+
+    /* PAGE TITLE */
+    .page-title {
+        font-size: 26px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+    /* STAT CARDS */
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 18px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    .stat-card h3 {
+        margin: 8px 0 5px;
+        font-size: 22px;
+        color: #111;
+    }
+    .stat-card p {
+        margin: 0;
+        color: #555;
+        font-size: 14px;
+    }
+
+    /* SERVICE SECTION */
+    .section-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 25px 0 10px;
+    }
+
+    .services {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 15px;
+    }
+
+    .service-box {
+        background: white;
+        padding: 18px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    .service-box h4 {
+        margin: 0 0 8px;
+        font-size: 18px;
+        color: #111;
+    }
+    .service-box p {
+        margin: 0;
+        color: #666;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    /* APPOINTMENTS TABLE */
+    .table-box {
+        background: white;
+        padding: 18px;
+        border-radius: 10px;
+        margin-top: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 500px;
+    }
+
+    th, td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+        font-size: 14px;
+    }
+    th {
+        background: #f9f9f9;
+        font-weight: 600;
+    }
+
+    .status {
+        padding: 5px 10px;
+        border-radius: 6px;
+        color: white;
+        font-size: 12px;
+    }
+    .pending { background: #f7b500; }
+    .complete { background: #28a745; }
+    .cancel { background: #d9534f; }
+
+    /* MOBILE FIX */
+    @media (max-width: 480px) {
+        .page-title { font-size: 22px; }
+        .stat-card h3 { font-size: 20px; }
+        .service-box h4 { font-size: 17px; }
+        th, td { font-size: 13px; padding: 10px; }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- PAGE TITLE -->
+    <div class="page-title">Automotive Dashboard</div>
+
+    <!-- STATISTICS -->
+    <div class="stats">
+        <div class="stat-card">
+            <h3>120+</h3>
+            <p>Total Services</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>45</h3>
+            <p>Pending Repairs</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>78</h3>
+            <p>Completed Jobs</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>25</h3>
+            <p>Appointments Today</p>
+        </div>
+    </div>
+
+    <!-- SERVICES SECTION -->
+    <div class="section-title">Popular Services</div>
+
+    <div class="services">
+        <div class="service-box">
+            <h4>Engine Diagnostics</h4>
+            <p>Advanced scanning tools to detect engine problems accurately.</p>
+        </div>
+
+        <div class="service-box">
+            <h4>Car Washing & Detailing</h4>
+            <p>Interior shampooing, exterior shining, and deep cleaning.</p>
+        </div>
+
+        <div class="service-box">
+            <h4>Brake Repair</h4>
+            <p>Brake pad replacement, oiling, inspection & safety check.</p>
+        </div>
+
+        <div class="service-box">
+            <h4>Tyre Replacement</h4>
+            <p>All major tyre brands with wheel balancing & alignment.</p>
+        </div>
+    </div>
+
+    <!-- APPOINTMENTS TABLE -->
+    <div class="section-title">Today’s Appointments</div>
+
+    <div class="table-box">
+        <table>
+            <tr>
+                <th>Customer</th>
+                <th>Service</th>
+                <th>Time</th>
+                <th>Status</th>
+            </tr>
+
+            <tr>
+                <td>Rahul Mehta</td>
+                <td>Engine Check</td>
+                <td>10:30 AM</td>
+                <td><span class="status pending">Pending</span></td>
+            </tr>
+
+            <tr>
+                <td>Aisha Khan</td>
+                <td>Car Wash</td>
+                <td>11:00 AM</td>
+                <td><span class="status complete">Completed</span></td>
+            </tr>
+
+            <tr>
+                <td>Karan Patel</td>
+                <td>Tyre Change</td>
+                <td>12:30 PM</td>
+                <td><span class="status pending">Pending</span></td>
+            </tr>
+
+            <tr>
+                <td>Manoj Kumar</td>
+                <td>Brake Repair</td>
+                <td>03:00 PM</td>
+                <td><span class="status cancel">Cancelled</span></td>
+            </tr>
+
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>
+
+<style>
+/* ================= FOOTER START ================= */
+
+footer{
+ background: linear-gradient(180deg, #1e1e3f, #342e6a, #4e2b8c);
+
+
+  color:#fff;
+  padding:70px 6%;
+  margin-top:80px;
+  position:relative;
+  overflow:hidden;
+  font-family:"Poppins",sans-serif;
+}
+
+/* Soft glow */
+footer::before{
+  content:"";
+  position:absolute;
+  top:-120px;
+  left:0;
+  width:120%;
+  height:220px;
+ 
+}
+
+
+/* GRID LAYOUT FIXED */
+.footer-container{
+  max-width:1200px;
+  margin:auto;
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap:50px;
+  position:relative;
+  z-index:2;
+}
+
+/* LEFT */
+.footer-left img{
+  height:58px;
+  margin-bottom:12px;
+  object-fit:contain;
+}
+
+.footer-left p{
+  opacity:0.85;
+  margin:12px 0 18px;
+  line-height:1.6;
+  font-size:14px;
+  max-width:280px;
+}
+
+/* SOCIAL ICONS */
+.social-icons{
+  display:flex;
+  gap:14px;
+  margin-top:12px;
+}
+.social-icons a{
+  height:42px;width:42px;
+  border-radius:50%;
+  background:#ffffff20;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  transition:.3s;
+}
+.social-icons a:hover{
+  background:#00eaff;
+  transform:translateY(-6px) scale(1.1);
+}
+.social-icons img{
+  height:20px;width:20px;
+}
+
+/* CENTER LINKS */
+.footer-links h3,
+.footer-contact h3{
+  margin-bottom:16px;
+  font-size:22px;
+  color:#00eaff;
+}
+
+.footer-links a{
+  display:block;
+  text-decoration:none;
+  color:#cbd5e1;
+  margin:6px 0;
+  font-size:15px;
+  transition:.3s;
+}
+.footer-links a:hover{
+  transform:translateX(6px);
+  color:#00eaff;
+}
+
+/* RIGHT CONTACT */
+.footer-contact p{
+  margin:6px 0;
+  opacity:.9;
+  font-size:15px;
+}
+
+/* SUBSCRIBE */
+.subscribe-box{
+  margin-top:16px;
+  display:flex;
+  width:100%;
+  max-width:320px;
+}
+.subscribe-box input{
+  flex:1;
+  padding:12px 14px;
+  background:#ffffff12;
+  border:none;
+  border-radius:6px 0 0 6px;
+  color:white;
+  outline:none;
+}
+.subscribe-box button{
+  padding:12px 20px;
+  background:#00eaff;
+  border:none;
+  color:#001;
+  font-weight:700;
+  border-radius:0 6px 6px 0;
+  cursor:pointer;
+}
+
+/* BOTTOM COPYRIGHT */
+.footer-bottom{
+  text-align:center;
+  margin-top:40px;
+  padding-top:18px;
+  border-top:1px solid #1e293b;
+  opacity:.8;
+  font-size:14px;
+}
+
+/* MOBILE VIEW FIX */
+/* MOBILE VIEW FIX */
+@media(max-width:900px){
+  
+  .footer-container{
+    grid-template-columns:1fr;
+    gap:45px;
+    text-align:center;
+  }
+
+  /* Left section */
+  .footer-left p{
+    margin:auto;
+  }
+
+  .social-icons{
+    justify-content:center;
+  }
+
+  /* QUICK LINKS */
+  .footer-links{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;   /* center block */
+  }
+
+  .footer-links h3{
+    text-align:center;
+    width:100%;
+  }
+
+  .footer-links a{
+    width:100%;
+    max-width:220px;      /* keeps good width */
+    text-align:start;     /* TEXT LEFT */
+    margin:4px 0;
+    padding-left:0;
+    margin-left: 130px;
+  }
+
+  /* Contact section */
+  .footer-contact{
+    text-align:center;
+  }
+
+  /* Subscribe input responsiveness */
+  .subscribe-box{
+    flex-direction:column;
+    max-width:none;
+  }
+  .subscribe-box input{
+    width:100%;
+    border-radius:6px;
+    margin-bottom:10px;
+  }
+  .subscribe-box button{
+    width:100%;
+    border-radius:6px;
+  }
+}
+
+</style>
+
+<footer>
+  <div class="footer-container">
+
+    <!-- LEFT -->
+    <div class="footer-left">
+      <img src="Screenshot (7) (1) (1).webp" alt="Company Logo">
+      <p>Our Automotive platform provides customers with 24/7 access to essential financial services...</p>
+
+      <div class="social-icons">
+        <a href="404.html"><img src="facebook.webp" alt="Facebook"></a>
+        <a href="404.html"><img src="twitter-logo.webp" alt="Twitter"></a>
+        <a href="404.html"><img src="linkedin.webp" alt="LinkedIn"></a>
+        <a href="404.html"><img src="instagram.webp" alt="Instagram"></a>
+      </div>
+    </div>
+
+    <!-- CENTER -->
+    <div class="footer-links">
+      <h3>Quick Links</h3>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+     <a href="services.html">Services</a>
+    <a href="about.html">About</a>
+    <a href="blog.html">Blog</a>
+      <a href="signup.html">Signin</a>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="footer-contact">
+      <h3>Contact Us</h3>
+      <p>📍 Bengaluru, Karnataka</p>
+      <p>📞 +91 98765 43210</p>
+      <p>✉ support@stacklyautomotive.com</p>
+
+      <form action="404.html" method="get" class="subscribe-box">
+        <input type="email" name="email" placeholder="Enter your email" required>
+        <button type="submit">Join</button>
+      </form>
+    </div>
+
+  </div>
+
+  <p class="footer-bottom">© 2025 Stackly Automotive. All Rights Reserved.</p>
+</footer>
+
+<!-- ================= FOOTER END ================= -->

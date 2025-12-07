@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stackly EV – Login</title>
+
+<style>
+/* RESET */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Poppins",sans-serif;
+}
+
+/* BACKGROUND */
+body{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:30px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(0,191,255,0.28), transparent 60%),
+    radial-gradient(circle at 80% 80%, rgba(0,220,255,0.22), transparent 60%),
+    linear-gradient(135deg,#dff5ff,#ffffff,#e0f7ff);
+}
+
+/* LOGIN CARD */
+.login-card{
+  width:100%;
+  max-width:420px;
+  background:rgba(255,255,255,0.6);
+  padding:35px;
+  border-radius:20px;
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.4);
+  box-shadow:0 12px 35px rgba(0,0,0,0.15);
+  animation:fadeIn .6s ease-in-out;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(25px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+/* HEADINGS */
+.login-card h2{
+  text-align:center;
+  font-size:30px;
+  color:#003b7a;
+  margin-bottom:10px;
+}
+
+.login-card p{
+  text-align:center;
+  color:#555;
+  font-size:15px;
+  margin-bottom:25px;
+}
+
+/* INPUT BOXES */
+.login-card input{
+  width:100%;
+  padding:14px;
+  margin-bottom:15px;
+  border-radius:10px;
+  border:1px solid rgba(0,0,0,0.2);
+  font-size:15px;
+  outline:none;
+  transition:.25s;
+}
+
+.login-card input:focus{
+  border-color:#00bfff;
+  box-shadow:0 0 8px rgba(0,191,255,0.4);
+}
+
+/* ERROR MESSAGE */
+.error{
+  color:red;
+  font-size:13px;
+  margin-top:-10px;
+  margin-bottom:10px;
+  display:none;
+}
+
+/* LOGIN BUTTON */
+.login-btn{
+  width:100%;
+  padding:14px;
+  background:#00bfff;
+  border:none;
+  color:white;
+  font-size:17px;
+  font-weight:600;
+  border-radius:12px;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.login-btn:hover{
+  background:#009ac9;
+}
+
+/* LINKS */
+.bottom-links{
+  margin-top:18px;
+  text-align:center;
+}
+
+.bottom-links a{
+  display:block;
+  margin:6px 0;
+  color:#005a99;
+  text-decoration:none;
+  font-weight:600;
+  font-size:14px;
+}
+
+.bottom-links a:hover{
+  text-decoration:underline;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-card">
+  
+  <h2>Welcome Back</h2>
+  <p>Login to continue your Stackly EV journey</p>
+
+  <!-- EMAIL OR PHONE -->
+  <input id="userField" type="text" placeholder="Email or Phone Number">
+  <div id="userErr" class="error">Enter a valid email or phone number.</div>
+
+  <!-- PASSWORD -->
+  <input id="password" type="password" placeholder="Enter Password">
+  <div id="passErr" class="error">Password cannot be empty.</div>
+
+  <!-- LOGIN BUTTON -->
+  <button class="login-btn" onclick="loginUser()">Login</button>
+
+  <!-- LINKS -->
+  <div class="bottom-links">
+    <a href="signup1.html">Create a New Account</a>
+    <a href="4041.html">Forgot Password?</a>
+    <a href="Home.html">Back to Home</a>
+  </div>
+
+</div>
+
+<script>
+function loginUser(){
+  let user = document.getElementById("userField").value.trim();
+  let pass = document.getElementById("password").value.trim();
+
+  let valid = true;
+
+  // EMAIL OR PHONE
+  let emailCheck = user.includes("@");
+  let phoneCheck = /^[0-9]{10}$/.test(user);
+
+  if(!emailCheck && !phoneCheck){
+    document.getElementById("userErr").style.display = "block";
+    valid = false;
+  } else document.getElementById("userErr").style.display = "none";
+
+  // PASSWORD
+  if(pass === ""){
+    document.getElementById("passErr").style.display = "block";
+    valid = false;
+  } else document.getElementById("passErr").style.display = "none";
+
+  // SUCCESS → GO TO NEXT PAGE
+  if(valid){
+    window.location.href = "nextpage.html";
+  }
+}
+</script>
+
+</body>
+</html>
